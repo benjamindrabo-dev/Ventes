@@ -13,99 +13,128 @@
   body{margin:0;background:var(--bg);color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:24px}
   h1{font-size:22px;margin:0 0 2px;font-weight:700}
+  h2{font-size:14px;margin:26px 0 10px;font-weight:700;text-transform:uppercase;
+     letter-spacing:.06em;color:var(--gold-d)}
+  h2 .n{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:12px}
   .sub{color:var(--muted);font-size:13px;margin-bottom:20px}
-  .cards{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+  .cards{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:6px}
   .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;min-width:150px;flex:1}
+  .kpi.hl{border-color:var(--gold);background:linear-gradient(180deg,#fffdf8,#fdf7ec)}
   .kpi .lab{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
   .kpi .val{font-size:22px;font-weight:700;margin-top:4px}
   .kpi .val.green{color:var(--green)}
   .kpi .val.gold{color:var(--gold-d)}
   table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
   th,td{padding:9px 12px;text-align:right;font-size:13px;border-bottom:1px solid var(--line)}
-  th{background:#f3ebdd;color:var(--gold-d);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.04em;position:sticky;top:0}
+  th{background:#f3ebdd;color:var(--gold-d);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.04em}
   td:first-child,th:first-child{text-align:left}
   tbody tr:hover{background:#fbf7ef}
   tbody tr:last-child td{border-bottom:none}
   .tot{font-weight:700;background:#f7f0e2}
   .tot td{border-top:2px solid var(--gold)}
   .pos{color:var(--green)}
-  .foot{color:var(--muted);font-size:11px;margin-top:14px;line-height:1.5}
-  .wrap{max-width:1000px;margin:0 auto}
+  .neg{color:var(--red)}
+  .today td{background:#fdf6e6}
+  .part{font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0}
+  .empty{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:18px;
+         color:var(--muted);font-size:13px;text-align:center}
+  .foot{color:var(--muted);font-size:11.5px;margin-top:18px;line-height:1.6}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Pure Majesty Pets — Ventes &amp; Bénéfices</h1>
-  <div class="sub" id="sub"></div>
-  <div class="cards" id="cards"></div>
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th><th>Cmd</th>
-        <th>CA net USD</th><th>CA net CAD</th>
-        <th>Marge brute CAD</th><th>Bénéfice net CAD</th>
-      </tr>
-    </thead>
-    <tbody id="tb"></tbody>
-    <tfoot id="tf"></tfoot>
-  </table>
-  <div class="foot" id="foot"></div>
-</div>
+<h1>Pure Majesty Pets — Ventes & Bénéfices</h1>
+<div class="sub" id="sub"></div>
+
+<h2 id="h-mtd"></h2>
+<div class="cards" id="mtd"></div>
+
+<h2 id="h-jour"></h2>
+<table><thead><tr>
+  <th>Date</th><th>Commandes</th><th>CA net USD</th><th>CA net CAD</th>
+  <th>COGS CAD</th><th>Marge brute CAD</th><th>Bénéfice net CAD</th>
+</tr></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table>
+
+<h2>Mois passés <span class="n">— coûts, marges et bénéfices archivés</span></h2>
+<div id="passes"></div>
+
+<div class="foot" id="foot"></div>
+
 <script>
-// Données journalières (source: ventes_journal.csv). Bénéfice net = marge brute − 3% du CA net (pub = 0).
-const FEE = 0.03;
-const rows = [
-["2026-06-21",1,23.99,33.59,22.76],["2026-06-22",12,504.97,706.96,425.59],
-["2026-06-23",8,308.62,432.07,268.60],["2026-06-24",10,430.58,602.81,364.73],
-["2026-06-25",13,478.62,670.07,442.81],["2026-06-26",15,571.30,799.82,528.14],
-["2026-06-27",7,287.86,403.00,240.67],["2026-06-28",7,342.06,478.88,306.64],
-["2026-06-29",10,382.69,543.92,332.87],["2026-06-30",15,702.81,1000.17,624.77],
-["2026-07-01",8,319.21,454.24,278.24],["2026-07-02",11,417.82,592.68,386.42],
-["2026-07-03",7,241.49,342.50,223.98],["2026-07-04",2,112.33,159.50,115.59],
-["2026-07-06",7,144.18,205.07,139.10],["2026-07-07",6,254.29,361.30,218.52],
-["2026-07-08",9,350.23,497.61,299.92],["2026-07-09",6,273.55,387.57,256.15],
-["2026-07-11",6,212.91,301.57,192.08],["2026-07-12",5,170.12,240.41,142.10],
-["2026-07-13",10,550.21,779.81,462.09],["2026-07-14",13,374.30,526.41,319.85],
-["2026-07-15",6,234.70,329.85,189.53],["2026-07-16",6,272.80,382.98,228.78],
-["2026-07-17",5,189.26,265.38,167.83],
-["2026-07-18",7,276.62,387.87,236.13],
-["2026-07-19",10,385.70,540.75,389.03],
-["2026-07-21",9,410.47,579.18,361.04],
-["2026-07-22",4,195.06,274.90,186.61],
-["2026-07-23",8,300.57,423.59,260.18],
-["2026-07-24",12,385.55,543.36,344.98],
-["2026-07-25",5,272.53,384.13,242.49],
-["2026-07-26",5,148.73,209.63,133.37],
-["2026-07-27",7,341.97,481.98,285.87],
-["2026-07-28",13,376.71,531.69,400.77]
-];
+const D = {"rows": [["2026-07-06", 7, 144.18, 205.07, 65.97, 139.1], ["2026-07-07", 6, 254.29, 361.3, 142.78, 218.52], ["2026-07-08", 9, 350.23, 497.61, 197.69, 299.92], ["2026-07-09", 6, 273.55, 387.57, 131.42, 256.15], ["2026-07-11", 6, 212.91, 301.57, 109.49, 192.08], ["2026-07-12", 5, 170.12, 240.41, 98.32, 142.1], ["2026-07-13", 10, 550.21, 779.81, 317.72, 462.09], ["2026-07-14", 13, 374.3, 526.41, 206.56, 319.85], ["2026-07-15", 6, 234.7, 329.85, 140.31, 189.53], ["2026-07-16", 6, 272.8, 382.98, 154.2, 228.78], ["2026-07-17", 5, 189.26, 265.38, 97.55, 167.83], ["2026-07-18", 7, 276.62, 387.87, 151.75, 236.13], ["2026-07-19", 10, 385.7, 540.75, 151.72, 389.03], ["2026-07-21", 9, 410.47, 579.18, 218.14, 361.04], ["2026-07-22", 4, 195.06, 274.9, 88.29, 186.61], ["2026-07-23", 8, 300.57, 423.59, 163.41, 260.18], ["2026-07-24", 12, 385.55, 543.36, 198.37, 344.98], ["2026-07-25", 5, 272.53, 384.13, 141.64, 242.49], ["2026-07-26", 5, 148.73, 209.63, 76.27, 133.37], ["2026-07-27", 7, 341.97, 481.98, 196.1, 285.87], ["2026-07-28", 13, 376.71, 531.69, 130.92, 400.77]], "moisCourant": "2026-07", "libelleMoisCourant": "Juillet 2026", "libelles": {"2026-07": "Juillet 2026"}, "debutHistorique": "2026-07-06", "build": "2026-07-28 22:00 (Est)", "fee": 0.03};
+const FEE = D.fee;
 const f = n => "$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
-const benef = r => r[4] - FEE*r[3]; // marge brute CAD − 3% CA net CAD
-const tb=document.getElementById("tb");
-let tCmd=0,tUsd=0,tCad=0,tMarge=0,tBenef=0;
-rows.forEach(r=>{
-  const b=benef(r);
-  tCmd+=r[1];tUsd+=r[2];tCad+=r[3];tMarge+=r[4];tBenef+=b;
+const benef = r => r[5] - FEE*r[3];          // marge brute CAD − 3% CA net CAD
+const ym = r => r[0].slice(0,7);
+
+/* ---------- agrégation par mois ---------- */
+const parMois = {};
+D.rows.forEach(r=>{
+  const k = ym(r);
+  const m = parMois[k] || (parMois[k] = {jours:0,cmd:0,usd:0,cad:0,cogs:0,marge:0,benef:0});
+  m.jours++; m.cmd+=r[1]; m.usd+=r[2]; m.cad+=r[3]; m.cogs+=r[4]; m.marge+=r[5]; m.benef+=benef(r);
+});
+
+/* ---------- mois en cours (MTD) ---------- */
+const cur = parMois[D.moisCourant];
+const joursCur = D.rows.filter(r=>ym(r)===D.moisCourant);
+const dernier = D.rows[D.rows.length-1];
+
+document.getElementById("sub").textContent =
+  `Dernier jour : ${dernier[0]} — ${dernier[1]} commandes. Historique depuis le ${D.debutHistorique}.`;
+
+document.getElementById("h-mtd").innerHTML =
+  `${D.libelleMoisCourant} — cumul du mois <span class="n">(${cur.jours} jour${cur.jours>1?"s":""} enregistré${cur.jours>1?"s":""}, ${cur.cmd} commandes)</span>`;
+
+document.getElementById("mtd").innerHTML = `
+  <div class="kpi hl"><div class="lab">CA net du mois USD</div><div class="val">${f(cur.usd)}</div></div>
+  <div class="kpi hl"><div class="lab">CA net du mois CAD</div><div class="val gold">${f(cur.cad)}</div></div>
+  <div class="kpi"><div class="lab">COGS du mois CAD</div><div class="val">${f(cur.cogs)}</div></div>
+  <div class="kpi"><div class="lab">Marge brute du mois CAD</div><div class="val">${f(cur.marge)}</div></div>
+  <div class="kpi"><div class="lab">Bénéfice net du mois CAD</div><div class="val green">${f(cur.benef)}</div></div>
+  <div class="kpi"><div class="lab">Panier moyen CAD</div><div class="val">${f(cur.cmd?cur.cad/cur.cmd:0)}</div></div>`;
+
+/* ---------- tableau jour par jour, mois en cours, récent en premier ---------- */
+document.getElementById("h-jour").innerHTML =
+  `Détail jour par jour — ${D.libelleMoisCourant} <span class="n">(du plus récent au plus ancien)</span>`;
+
+const tb = document.getElementById("tb");
+joursCur.slice().reverse().forEach((r,i)=>{
+  const b = benef(r);
   tb.insertAdjacentHTML("beforeend",
-   `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${f(r[2])}</td><td>${f(r[3])}</td><td>${f(r[4])}</td><td class="pos">${f(b)}</td></tr>`);
+   `<tr class="${i===0?"today":""}"><td>${r[0]}</td><td>${r[1]}</td><td>${f(r[2])}</td><td>${f(r[3])}</td>`+
+   `<td>${f(r[4])}</td><td>${f(r[5])}</td><td class="${b>=0?"pos":"neg"}">${f(b)}</td></tr>`);
 });
 document.getElementById("tf").innerHTML =
- `<tr class="tot"><td>TOTAL (${rows.length} j)</td><td>${tCmd}</td><td>${f(tUsd)}</td><td>${f(tCad)}</td><td>${f(tMarge)}</td><td>${f(tBenef)}</td></tr>`;
-const last=rows[rows.length-1];
-document.getElementById("sub").textContent =
- `Dernier jour : ${last[0]} — ${last[1]} commandes. Historique ${rows[0][0]} → ${last[0]}.`;
-const lb=benef(last);
-document.getElementById("cards").innerHTML = `
-  <div class="kpi"><div class="lab">CA net (jour) USD</div><div class="val">${f(last[2])}</div></div>
-  <div class="kpi"><div class="lab">CA net (jour) CAD</div><div class="val gold">${f(last[3])}</div></div>
-  <div class="kpi"><div class="lab">Marge brute CAD</div><div class="val">${f(last[4])}</div></div>
-  <div class="kpi"><div class="lab">Bénéfice net CAD</div><div class="val green">${f(lb)}</div></div>
-  <div class="kpi"><div class="lab">Cumul bénéfice net CAD</div><div class="val green">${f(tBenef)}</div></div>`;
-const BUILD = "2026-07-28 22:00 (Est)";
+ `<tr class="tot"><td>TOTAL ${D.libelleMoisCourant}</td><td>${cur.cmd}</td><td>${f(cur.usd)}</td>`+
+ `<td>${f(cur.cad)}</td><td>${f(cur.cogs)}</td><td>${f(cur.marge)}</td><td>${f(cur.benef)}</td></tr>`;
+
+/* ---------- mois passés ---------- */
+const passes = Object.keys(parMois).filter(k=>k!==D.moisCourant).sort().reverse();
+const box = document.getElementById("passes");
+if(!passes.length){
+  box.innerHTML = `<div class="empty">Aucun mois terminé pour l'instant — ${D.libelleMoisCourant} basculera ici automatiquement le 1<sup>er</sup> du mois prochain.</div>`;
+}else{
+  let tot={cmd:0,usd:0,cad:0,cogs:0,marge:0,benef:0};
+  let html = `<table><thead><tr><th>Mois</th><th>Jours</th><th>Commandes</th><th>CA net USD</th>`+
+             `<th>CA net CAD</th><th>COGS CAD</th><th>Marge brute CAD</th><th>Bénéfice net CAD</th></tr></thead><tbody>`;
+  passes.forEach(k=>{
+    const m=parMois[k];
+    tot.cmd+=m.cmd; tot.usd+=m.usd; tot.cad+=m.cad; tot.cogs+=m.cogs; tot.marge+=m.marge; tot.benef+=m.benef;
+    const partiel = k===D.debutHistorique.slice(0,7) && D.debutHistorique.slice(8)!=="01"
+      ? `<span class="part"> (à partir du ${D.debutHistorique})</span>` : "";
+    html += `<tr><td>${D.libelles[k]}${partiel}</td><td>${m.jours}</td><td>${m.cmd}</td><td>${f(m.usd)}</td>`+
+            `<td>${f(m.cad)}</td><td>${f(m.cogs)}</td><td>${f(m.marge)}</td><td class="pos">${f(m.benef)}</td></tr>`;
+  });
+  html += `</tbody><tfoot><tr class="tot"><td>TOTAL mois clos</td><td>—</td><td>${tot.cmd}</td><td>${f(tot.usd)}</td>`+
+          `<td>${f(tot.cad)}</td><td>${f(tot.cogs)}</td><td>${f(tot.marge)}</td><td>${f(tot.benef)}</td></tr></tfoot></table>`;
+  box.innerHTML = html;
+}
+
 document.getElementById("foot").innerHTML =
- "Bénéfice net = marge brute − 3% de frais de transaction (pub supposée 0). COGS = coût DSers tout compris. "+
- "Conversion CAD au taux mid-market du jour de chaque run. Source ventes : Shopify (ShopifyQL, fenêtre 24h)."+
- "<br>Dernière mise à jour : " + BUILD + ".";
+ "Bénéfice net = marge brute − 3 % de frais de transaction sur le CA net (budget pub supposé 0). "+
+ "COGS = coût fournisseur DSers tout compris ; les produits sans coût DSers connu en sont exclus, la marge est donc une borne haute.<br>"+
+ "Conversion CAD au taux mid-market relevé le jour de chaque run. Source ventes : Shopify (ShopifyQL, fenêtre 24 h glissante clôturée à 22 h Est).<br>"+
+ "Dernière mise à jour : " + D.build + ".";
 </script>
 </body>
 </html>
