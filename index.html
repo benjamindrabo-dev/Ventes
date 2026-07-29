@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pure Majesty Pets — Ventes & Bénéfices</title>
+<style>
+  :root{
+    --bg:#faf6f0; --card:#ffffff; --ink:#2b2118; --muted:#8a7a68;
+    --gold:#c8a04b; --gold-d:#a9822f; --line:#ece2d3; --green:#3f7d54; --red:#b4553f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:24px}
+  h1{font-size:22px;margin:0 0 2px;font-weight:700}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+  .cards{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;min-width:150px;flex:1}
+  .kpi .lab{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .kpi .val{font-size:22px;font-weight:700;margin-top:4px}
+  .kpi .val.green{color:var(--green)}
+  .kpi .val.gold{color:var(--gold-d)}
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  th,td{padding:9px 12px;text-align:right;font-size:13px;border-bottom:1px solid var(--line)}
+  th{background:#f3ebdd;color:var(--gold-d);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.04em;position:sticky;top:0}
+  td:first-child,th:first-child{text-align:left}
+  tbody tr:hover{background:#fbf7ef}
+  tbody tr:last-child td{border-bottom:none}
+  .tot{font-weight:700;background:#f7f0e2}
+  .tot td{border-top:2px solid var(--gold)}
+  .pos{color:var(--green)}
+  .foot{color:var(--muted);font-size:11px;margin-top:14px;line-height:1.5}
+  .wrap{max-width:1000px;margin:0 auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Pure Majesty Pets — Ventes &amp; Bénéfices</h1>
+  <div class="sub" id="sub"></div>
+  <div class="cards" id="cards"></div>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th><th>Cmd</th>
+        <th>CA net USD</th><th>CA net CAD</th>
+        <th>Marge brute CAD</th><th>Bénéfice net CAD</th>
+      </tr>
+    </thead>
+    <tbody id="tb"></tbody>
+    <tfoot id="tf"></tfoot>
+  </table>
+  <div class="foot" id="foot"></div>
+</div>
+<script>
+// Données journalières (source: ventes_journal.csv). Bénéfice net = marge brute − 3% du CA net (pub = 0).
+const FEE = 0.03;
+const rows = [
+["2026-06-21",1,23.99,33.59,22.76],["2026-06-22",12,504.97,706.96,425.59],
+["2026-06-23",8,308.62,432.07,268.60],["2026-06-24",10,430.58,602.81,364.73],
+["2026-06-25",13,478.62,670.07,442.81],["2026-06-26",15,571.30,799.82,528.14],
+["2026-06-27",7,287.86,403.00,240.67],["2026-06-28",7,342.06,478.88,306.64],
+["2026-06-29",10,382.69,543.92,332.87],["2026-06-30",15,702.81,1000.17,624.77],
+["2026-07-01",8,319.21,454.24,278.24],["2026-07-02",11,417.82,592.68,386.42],
+["2026-07-03",7,241.49,342.50,223.98],["2026-07-04",2,112.33,159.50,115.59],
+["2026-07-06",7,144.18,205.07,139.10],["2026-07-07",6,254.29,361.30,218.52],
+["2026-07-08",9,350.23,497.61,299.92],["2026-07-09",6,273.55,387.57,256.15],
+["2026-07-11",6,212.91,301.57,192.08],["2026-07-12",5,170.12,240.41,142.10],
+["2026-07-13",10,550.21,779.81,462.09],["2026-07-14",13,374.30,526.41,319.85],
+["2026-07-15",6,234.70,329.85,189.53],["2026-07-16",6,272.80,382.98,228.78],
+["2026-07-17",5,189.26,265.38,167.83],
+["2026-07-18",7,276.62,387.87,236.13],
+["2026-07-19",10,385.70,540.75,389.03],
+["2026-07-21",9,410.47,579.18,361.04],
+["2026-07-22",4,195.06,274.90,186.61],
+["2026-07-23",8,300.57,423.59,260.18],
+["2026-07-24",12,385.55,543.36,344.98],
+["2026-07-25",5,272.53,384.13,242.49],
+["2026-07-26",5,148.73,209.63,133.37],
+["2026-07-27",7,341.97,481.98,285.87],
+["2026-07-28",13,376.71,531.69,400.77]
+];
+const f = n => "$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const benef = r => r[4] - FEE*r[3]; // marge brute CAD − 3% CA net CAD
+const tb=document.getElementById("tb");
+let tCmd=0,tUsd=0,tCad=0,tMarge=0,tBenef=0;
+rows.forEach(r=>{
+  const b=benef(r);
+  tCmd+=r[1];tUsd+=r[2];tCad+=r[3];tMarge+=r[4];tBenef+=b;
+  tb.insertAdjacentHTML("beforeend",
+   `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${f(r[2])}</td><td>${f(r[3])}</td><td>${f(r[4])}</td><td class="pos">${f(b)}</td></tr>`);
+});
+document.getElementById("tf").innerHTML =
+ `<tr class="tot"><td>TOTAL (${rows.length} j)</td><td>${tCmd}</td><td>${f(tUsd)}</td><td>${f(tCad)}</td><td>${f(tMarge)}</td><td>${f(tBenef)}</td></tr>`;
+const last=rows[rows.length-1];
+document.getElementById("sub").textContent =
+ `Dernier jour : ${last[0]} — ${last[1]} commandes. Historique ${rows[0][0]} → ${last[0]}.`;
+const lb=benef(last);
+document.getElementById("cards").innerHTML = `
+  <div class="kpi"><div class="lab">CA net (jour) USD</div><div class="val">${f(last[2])}</div></div>
+  <div class="kpi"><div class="lab">CA net (jour) CAD</div><div class="val gold">${f(last[3])}</div></div>
+  <div class="kpi"><div class="lab">Marge brute CAD</div><div class="val">${f(last[4])}</div></div>
+  <div class="kpi"><div class="lab">Bénéfice net CAD</div><div class="val green">${f(lb)}</div></div>
+  <div class="kpi"><div class="lab">Cumul bénéfice net CAD</div><div class="val green">${f(tBenef)}</div></div>`;
+document.getElementById("foot").innerHTML =
+ "Bénéfice net = marge brute − 3% de frais de transaction (pub supposée 0). COGS = coût DSers tout compris. "+
+ "Conversion CAD au taux mid-market du jour de chaque run. Source ventes : Shopify (ShopifyQL, fenêtre 24h).";
+</script>
+</body>
+</html>
