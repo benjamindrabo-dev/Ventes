@@ -101,9 +101,11 @@ document.getElementById("cards").innerHTML = `
   <div class="kpi"><div class="lab">Marge brute CAD</div><div class="val">${f(last[4])}</div></div>
   <div class="kpi"><div class="lab">Bénéfice net CAD</div><div class="val green">${f(lb)}</div></div>
   <div class="kpi"><div class="lab">Cumul bénéfice net CAD</div><div class="val green">${f(tBenef)}</div></div>`;
+const BUILD = "2026-07-28 22:00 (Est)";
 document.getElementById("foot").innerHTML =
  "Bénéfice net = marge brute − 3% de frais de transaction (pub supposée 0). COGS = coût DSers tout compris. "+
- "Conversion CAD au taux mid-market du jour de chaque run. Source ventes : Shopify (ShopifyQL, fenêtre 24h).";
+ "Conversion CAD au taux mid-market du jour de chaque run. Source ventes : Shopify (ShopifyQL, fenêtre 24h)."+
+ "<br>Dernière mise à jour : " + BUILD + ".";
 </script>
 </body>
 </html>
