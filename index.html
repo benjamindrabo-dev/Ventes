@@ -58,7 +58,7 @@
 <h2 id="h-jour"></h2>
 <table><thead><tr>
   <th>Date</th><th>Commandes</th><th>CA net USD</th><th>CA net CAD</th>
-  <th>COGS CAD</th><th>Marge brute CAD</th><th>Bénéfice net CAD</th>
+  <th>COGS CAD</th><th>Marge brute CAD</th><th>Remb. CAD</th><th>Bénéfice net CAD</th>
 </tr></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table>
 
 <h2 id="h-backlog"></h2>
@@ -71,20 +71,21 @@
 <div class="foot" id="foot"></div>
 
 <script>
-const D = {"rows": [["2026-07-06", 7, 144.18, 205.07, 65.97, 139.1], ["2026-07-07", 6, 254.29, 361.3, 142.78, 218.52], ["2026-07-08", 9, 350.23, 497.61, 197.69, 299.92], ["2026-07-09", 6, 273.55, 387.57, 131.42, 256.15], ["2026-07-11", 6, 212.91, 301.57, 109.49, 192.08], ["2026-07-12", 5, 170.12, 240.41, 98.32, 142.1], ["2026-07-13", 10, 550.21, 779.81, 317.72, 462.09], ["2026-07-14", 13, 374.3, 526.41, 206.56, 319.85], ["2026-07-15", 6, 234.7, 329.85, 140.31, 189.53], ["2026-07-16", 6, 272.8, 382.98, 154.2, 228.78], ["2026-07-17", 5, 189.26, 265.38, 97.55, 167.83], ["2026-07-18", 7, 276.62, 387.87, 151.75, 236.13], ["2026-07-19", 10, 385.7, 540.75, 151.72, 389.03], ["2026-07-21", 9, 410.47, 579.18, 218.14, 361.04], ["2026-07-22", 4, 195.06, 274.9, 88.29, 186.61], ["2026-07-23", 8, 300.57, 423.59, 163.41, 260.18], ["2026-07-24", 12, 385.55, 543.36, 198.37, 344.98], ["2026-07-25", 5, 272.53, 384.13, 141.64, 242.49], ["2026-07-26", 5, 148.73, 209.63, 76.27, 133.37], ["2026-07-27", 7, 341.97, 481.98, 196.1, 285.87], ["2026-07-28", 13, 376.71, 531.69, 130.92, 400.77], ["2026-07-29", 5, 161.25, 227.27, 88.3, 138.97], ["2026-07-30", 17, 665.4, 932.96, 305.74, 627.22], ["2026-07-31", 12, 460.46, 645.61, 227.6, 418.01], ["2026-08-01", 11, 455.63, 638.84, 184.25, 454.59], ["2026-08-02", 9, 414.82, 581.62, 216.76, 364.85], ["2026-08-03", 16, 701.27, 984.79, 366.62, 618.17], ["2026-08-04", 14, 667.86, 939.28, 358.25, 581.03], ["2026-08-05", 12, 573.99, 804.27, 314.42, 489.86], ["2026-08-06", 5, 233.09, 325.02, 116.35, 208.67], ["2026-08-07", 10, 419.11, 584.41, 221.92, 362.49], ["2026-08-08", 15, 614.63, 857.04, 297.15, 559.89], ["2026-08-09", 6, 301.55, 420.48, 137.91, 282.58], ["2026-08-10", 12, 815.89, 1137.51, 392.9, 744.61], ["2026-08-11", 11, 640.92, 892.16, 326.62, 565.54], ["2026-08-12", 9, 426.54, 594.6, 215.21, 379.39], ["2026-08-13", 11, 448.9, 625.77, 194.6, 431.16], ["2026-08-14", 11, 771.48, 1074.83, 381.21, 693.62], ["2026-08-15", 11, 661.51, 928.5, 401.15, 527.35], ["2026-08-16", 7, 350.19, 491.53, 177.75, 313.77], ["2026-08-17", 12, 764.88, 1060.74, 369.46, 691.28], ["2026-08-18", 10, 522.81, 727.16, 268.71, 458.25], ["2026-08-19", 16, 708.79, 983.45, 349.22, 634.23], ["2026-08-20", 15, 1029.61, 1420.35, 536.65, 883.69], ["2026-08-21", 12, 583.51, 803.35, 297.99, 505.36], ["2026-08-22", 13, 725.77, 999.24, 342.23, 657.01]], "moisCourant": "2026-08", "libelleMoisCourant": "Août 2026", "libelles": {"2026-07": "Juillet 2026", "2026-08": "Août 2026"}, "debutHistorique": "2026-07-06", "build": "2026-08-22 22:00 (Est)", "fee": 0.039, "feeFixe": 0.3, "backlog": {"commandes": 130, "unites": 358, "coutUsd": 2710.79, "coutCad": 3732.22, "maj": "2026-08-22 22:00 (Est)", "produits": [{"titre": "Liquid Collagen for Dogs (tous titres)", "unites": 300, "cout_unitaire_usd": 7.73, "cout_total_usd": 2319.0}, {"titre": "Yeast Infection Drops (tous titres)", "unites": 36, "cout_unitaire_usd": 6.14, "cout_total_usd": 221.04}, {"titre": "Hip & Joint Chews", "unites": 5, "cout_unitaire_usd": 23.11, "cout_total_usd": 115.55}, {"titre": "Liquid Glucosamine", "unites": 3, "cout_unitaire_usd": 6.32, "cout_total_usd": 18.96}, {"titre": "Dog Dental Powder", "unites": 3, "cout_unitaire_usd": 5.98, "cout_total_usd": 17.94}, {"titre": "Cranberry Drops", "unites": 2, "cout_unitaire_usd": 3.31, "cout_total_usd": 6.62}, {"titre": "Liquid Probiotic", "unites": 1, "cout_unitaire_usd": 6.47, "cout_total_usd": 6.47}, {"titre": "Melatonin Drops", "unites": 1, "cout_unitaire_usd": 5.21, "cout_total_usd": 5.21}, {"titre": "Advanced Vision Drops", "unites": 3, "cout_unitaire_usd": null, "cout_total_usd": null}, {"titre": "Dog Eye Cleaning Rinse", "unites": 1, "cout_unitaire_usd": null, "cout_total_usd": null}, {"titre": "Present (cadeau)", "unites": 3, "cout_unitaire_usd": null, "cout_total_usd": null}]}};
+const D = {"rows": [["2026-07-06", 7, 144.18, 205.07, 65.97, 139.1, 0], ["2026-07-07", 6, 254.29, 361.3, 142.78, 218.52, 0], ["2026-07-08", 9, 350.23, 497.61, 197.69, 299.92, 0], ["2026-07-09", 6, 273.55, 387.57, 131.42, 256.15, 0], ["2026-07-11", 6, 212.91, 301.57, 109.49, 192.08, 0], ["2026-07-12", 5, 170.12, 240.41, 98.32, 142.1, 0], ["2026-07-13", 10, 550.21, 779.81, 317.72, 462.09, 0], ["2026-07-14", 13, 374.3, 526.41, 206.56, 319.85, 0], ["2026-07-15", 6, 234.7, 329.85, 140.31, 189.53, 0], ["2026-07-16", 6, 272.8, 382.98, 154.2, 228.78, 0], ["2026-07-17", 5, 189.26, 265.38, 97.55, 167.83, 0], ["2026-07-18", 7, 276.62, 387.87, 151.75, 236.13, 0], ["2026-07-19", 10, 385.7, 540.75, 151.72, 389.03, 0], ["2026-07-21", 9, 410.47, 579.18, 218.14, 361.04, 0], ["2026-07-22", 4, 195.06, 274.9, 88.29, 186.61, 0], ["2026-07-23", 8, 300.57, 423.59, 163.41, 260.18, 0], ["2026-07-24", 12, 385.55, 543.36, 198.37, 344.98, 0], ["2026-07-25", 5, 272.53, 384.13, 141.64, 242.49, 0], ["2026-07-26", 5, 148.73, 209.63, 76.27, 133.37, 0], ["2026-07-27", 7, 341.97, 481.98, 196.1, 285.87, 0], ["2026-07-28", 13, 376.71, 531.69, 130.92, 400.77, 0], ["2026-07-29", 5, 161.25, 227.27, 88.3, 138.97, 0], ["2026-07-30", 17, 665.4, 932.96, 305.74, 627.22, 0], ["2026-07-31", 12, 460.46, 645.61, 227.6, 418.01, 100.91], ["2026-08-01", 11, 455.63, 638.84, 184.25, 454.59, 0], ["2026-08-02", 9, 414.82, 581.62, 216.76, 364.85, 0], ["2026-08-03", 16, 701.27, 984.79, 366.62, 618.17, 0], ["2026-08-04", 14, 667.86, 939.28, 358.25, 581.03, 0], ["2026-08-05", 12, 573.99, 804.27, 314.42, 489.86, 0], ["2026-08-06", 5, 233.09, 325.02, 116.35, 208.67, 0], ["2026-08-07", 10, 419.11, 584.41, 221.92, 362.49, 33.45], ["2026-08-08", 15, 614.63, 857.04, 297.15, 559.89, 0], ["2026-08-09", 6, 301.55, 420.48, 137.91, 282.58, 0], ["2026-08-10", 12, 815.89, 1137.51, 392.9, 744.61, 50.16], ["2026-08-11", 11, 640.92, 892.16, 326.62, 565.54, 122.55], ["2026-08-12", 9, 426.54, 594.6, 215.21, 379.39, 142.75], ["2026-08-13", 11, 448.9, 625.77, 194.6, 431.16, 0], ["2026-08-14", 11, 771.48, 1074.83, 381.21, 693.62, 0], ["2026-08-15", 11, 661.51, 928.5, 401.15, 527.35, 0], ["2026-08-16", 7, 350.19, 491.53, 177.75, 313.77, 84.19], ["2026-08-17", 12, 764.88, 1060.74, 369.46, 691.28, 0], ["2026-08-18", 10, 522.81, 727.16, 268.71, 458.25, 106.76], ["2026-08-19", 16, 708.79, 983.45, 349.22, 634.23, 0], ["2026-08-20", 15, 1029.61, 1420.35, 536.65, 883.69, 0], ["2026-08-21", 12, 583.51, 803.35, 297.99, 505.36, 99.09], ["2026-08-22", 13, 725.77, 999.24, 342.23, 657.01, 35.69]], "moisCourant": "2026-08", "libelleMoisCourant": "Août 2026", "libelles": {"2026-07": "Juillet 2026", "2026-08": "Août 2026"}, "debutHistorique": "2026-07-06", "build": "2026-08-22 22:00 (Est)", "fee": 0.039, "feeFixe": 0.3, "backlog": {"commandes": 130, "unites": 358, "coutUsd": 2710.79, "coutCad": 3732.22, "maj": "2026-08-22 22:00 (Est)", "produits": [{"titre": "Liquid Collagen for Dogs (tous titres)", "unites": 300, "cout_unitaire_usd": 7.73, "cout_total_usd": 2319.0}, {"titre": "Yeast Infection Drops (tous titres)", "unites": 36, "cout_unitaire_usd": 6.14, "cout_total_usd": 221.04}, {"titre": "Hip & Joint Chews", "unites": 5, "cout_unitaire_usd": 23.11, "cout_total_usd": 115.55}, {"titre": "Liquid Glucosamine", "unites": 3, "cout_unitaire_usd": 6.32, "cout_total_usd": 18.96}, {"titre": "Dog Dental Powder", "unites": 3, "cout_unitaire_usd": 5.98, "cout_total_usd": 17.94}, {"titre": "Cranberry Drops", "unites": 2, "cout_unitaire_usd": 3.31, "cout_total_usd": 6.62}, {"titre": "Liquid Probiotic", "unites": 1, "cout_unitaire_usd": 6.47, "cout_total_usd": 6.47}, {"titre": "Melatonin Drops", "unites": 1, "cout_unitaire_usd": 5.21, "cout_total_usd": 5.21}, {"titre": "Advanced Vision Drops", "unites": 3, "cout_unitaire_usd": null, "cout_total_usd": null}, {"titre": "Dog Eye Cleaning Rinse", "unites": 1, "cout_unitaire_usd": null, "cout_total_usd": null}, {"titre": "Present (cadeau)", "unites": 3, "cout_unitaire_usd": null, "cout_total_usd": null}]}};
 const FEE = D.fee;
 const FEE_FIXE = D.feeFixe || 0;
 const f = n => "$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 // r[1]=commandes, r[3]=CA net CAD, r[5]=marge brute CAD ; taux CAD du jour = r[3]/r[2]
-const benef = r => r[5] - (FEE*r[3] + FEE_FIXE*r[1]*(r[2]?r[3]/r[2]:1));
+const remb = r => (r[6]||0);
+const benef = r => r[5] - (FEE*r[3] + FEE_FIXE*r[1]*(r[2]?r[3]/r[2]:1)) - remb(r);
 const ym = r => r[0].slice(0,7);
 
 /* ---------- agrégation par mois ---------- */
 const parMois = {};
 D.rows.forEach(r=>{
   const k = ym(r);
-  const m = parMois[k] || (parMois[k] = {jours:0,cmd:0,usd:0,cad:0,cogs:0,marge:0,benef:0});
-  m.jours++; m.cmd+=r[1]; m.usd+=r[2]; m.cad+=r[3]; m.cogs+=r[4]; m.marge+=r[5]; m.benef+=benef(r);
+  const m = parMois[k] || (parMois[k] = {jours:0,cmd:0,usd:0,cad:0,cogs:0,marge:0,remb:0,benef:0});
+  m.jours++; m.cmd+=r[1]; m.usd+=r[2]; m.cad+=r[3]; m.cogs+=r[4]; m.marge+=r[5]; m.remb+=remb(r); m.benef+=benef(r);
 });
 
 /* ---------- navigation par mois ---------- */
@@ -119,6 +120,7 @@ function render(k){
     <div class="kpi hl"><div class="lab">CA net du mois CAD</div><div class="val gold">${f(cur.cad)}</div></div>
     <div class="kpi"><div class="lab">COGS du mois CAD</div><div class="val">${f(cur.cogs)}</div></div>
     <div class="kpi"><div class="lab">Marge brute du mois CAD</div><div class="val">${f(cur.marge)}</div></div>
+    <div class="kpi"><div class="lab">Remboursements du mois CAD</div><div class="val neg">${f(cur.remb)}</div></div>
     <div class="kpi"><div class="lab">Bénéfice net du mois CAD</div><div class="val green">${f(cur.benef)}</div></div>
     <div class="kpi"><div class="lab">Panier moyen CAD</div><div class="val">${f(cur.cmd?cur.cad/cur.cmd:0)}</div></div>`;
 
@@ -131,11 +133,11 @@ function render(k){
     const b = benef(r);
     tb.insertAdjacentHTML("beforeend",
      `<tr class="${r[0]===dernier[0]?"today":""}"><td>${r[0]}</td><td>${r[1]}</td><td>${f(r[2])}</td><td>${f(r[3])}</td>`+
-     `<td>${f(r[4])}</td><td>${f(r[5])}</td><td class="${b>=0?"pos":"neg"}">${f(b)}</td></tr>`);
+     `<td>${f(r[4])}</td><td>${f(r[5])}</td><td class="${remb(r)>0?'neg':''}">${f(remb(r))}</td><td class="${b>=0?"pos":"neg"}">${f(b)}</td></tr>`);
   });
   document.getElementById("tf").innerHTML =
    `<tr class="tot"><td>TOTAL ${D.libelles[k]}</td><td>${cur.cmd}</td><td>${f(cur.usd)}</td>`+
-   `<td>${f(cur.cad)}</td><td>${f(cur.cogs)}</td><td>${f(cur.marge)}</td><td>${f(cur.benef)}</td></tr>`;
+   `<td>${f(cur.cad)}</td><td>${f(cur.cogs)}</td><td>${f(cur.marge)}</td><td>${f(cur.remb)}</td><td>${f(cur.benef)}</td></tr>`;
 }
 render(D.moisCourant);
 
@@ -166,24 +168,24 @@ const box = document.getElementById("passes");
 if(!passes.length){
   box.innerHTML = `<div class="empty">Aucun mois terminé pour l'instant — ${D.libelleMoisCourant} basculera ici automatiquement le 1<sup>er</sup> du mois prochain.</div>`;
 }else{
-  let tot={cmd:0,usd:0,cad:0,cogs:0,marge:0,benef:0};
+  let tot={cmd:0,usd:0,cad:0,cogs:0,marge:0,remb:0,benef:0};
   let html = `<table><thead><tr><th>Mois</th><th>Jours</th><th>Commandes</th><th>CA net USD</th>`+
-             `<th>CA net CAD</th><th>COGS CAD</th><th>Marge brute CAD</th><th>Bénéfice net CAD</th></tr></thead><tbody>`;
+             `<th>CA net CAD</th><th>COGS CAD</th><th>Marge brute CAD</th><th>Remb. CAD</th><th>Bénéfice net CAD</th></tr></thead><tbody>`;
   passes.forEach(k=>{
     const m=parMois[k];
-    tot.cmd+=m.cmd; tot.usd+=m.usd; tot.cad+=m.cad; tot.cogs+=m.cogs; tot.marge+=m.marge; tot.benef+=m.benef;
+    tot.cmd+=m.cmd; tot.usd+=m.usd; tot.cad+=m.cad; tot.cogs+=m.cogs; tot.marge+=m.marge; tot.remb+=m.remb; tot.benef+=m.benef;
     const partiel = k===D.debutHistorique.slice(0,7) && D.debutHistorique.slice(8)!=="01"
       ? `<span class="part"> (à partir du ${D.debutHistorique})</span>` : "";
     html += `<tr><td>${D.libelles[k]}${partiel}</td><td>${m.jours}</td><td>${m.cmd}</td><td>${f(m.usd)}</td>`+
-            `<td>${f(m.cad)}</td><td>${f(m.cogs)}</td><td>${f(m.marge)}</td><td class="pos">${f(m.benef)}</td></tr>`;
+            `<td>${f(m.cad)}</td><td>${f(m.cogs)}</td><td>${f(m.marge)}</td><td class="neg">${f(m.remb)}</td><td class="pos">${f(m.benef)}</td></tr>`;
   });
   html += `</tbody><tfoot><tr class="tot"><td>TOTAL mois clos</td><td>—</td><td>${tot.cmd}</td><td>${f(tot.usd)}</td>`+
-          `<td>${f(tot.cad)}</td><td>${f(tot.cogs)}</td><td>${f(tot.marge)}</td><td>${f(tot.benef)}</td></tr></tfoot></table>`;
+          `<td>${f(tot.cad)}</td><td>${f(tot.cogs)}</td><td>${f(tot.marge)}</td><td>${f(tot.remb)}</td><td>${f(tot.benef)}</td></tr></tfoot></table>`;
   box.innerHTML = html;
 }
 
 document.getElementById("foot").innerHTML =
- "Bénéfice net = marge brute − 3 % de frais de transaction sur le CA net (budget pub supposé 0). "+
+ "Bénéfice net = marge brute − frais de transaction Stripe − remboursements (perte nette : aucun retour marchandise ; budget pub supposé 0). "+
  "COGS = coût fournisseur DSers tout compris ; les produits sans coût DSers connu en sont exclus, la marge est donc une borne haute.<br>"+
  "Conversion CAD au taux mid-market relevé le jour de chaque run. Source ventes : Shopify (ShopifyQL, fenêtre 24 h glissante clôturée à 22 h Est).<br>"+
  "Dernière mise à jour : " + D.build + ".";
