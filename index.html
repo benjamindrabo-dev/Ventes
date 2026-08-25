@@ -133,7 +133,7 @@ function render(k){
     const b = benef(r);
     tb.insertAdjacentHTML("beforeend",
      `<tr class="${r[0]===dernier[0]?"today":""}"><td>${r[0]}</td><td>${r[1]}</td><td>${f(r[2])}</td><td>${f(r[3])}</td>`+
-     `<td>${f(rs[4])}</td><td>${f(r[5])}</td><td class="${remb(r)>0?'neg':''}">${f(remb(r))}</td><td class="${b>=0?"pos":"neg"}">${f(b)}</td></tr>`);
+     `<td>${f(r[4])}</td><td>${f(r[5])}</td><td class="${remb(r)>0?'neg':''}">${f(remb(r))}</td><td class="${b>=0?"pos":"neg"}">${f(b)}</td></tr>`);
   });
   document.getElementById("tf").innerHTML =
    `<tr class="tot"><td>TOTAL ${D.libelles[k]}</td><td>${cur.cmd}</td><td>${f(cur.usd)}</td>`+
