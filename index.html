@@ -16,7 +16,7 @@
   h2{font-size:14px;margin:26px 0 10px;font-weight:700;text-transform:uppercase;
      letter-spacing:.06em;color:var(--gold-d)}
   h2 .n{font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:12px}
-  .sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:16px;line-height:1.6}
   .nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 8px}
   .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;
         padding:7px 16px;font-size:13px;cursor:pointer;font-weight:600;font-family:inherit}
@@ -30,6 +30,7 @@
   .kpi .val.green{color:var(--green)}
   .kpi .val.gold{color:var(--gold-d)}
   .kpi .val.res{color:#5b6b8a}
+  .table-wrap{overflow-x:auto;border-radius:14px}
   table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
   th,td{padding:9px 12px;text-align:right;font-size:13px;border-bottom:1px solid var(--line)}
   th{background:#f3ebdd;color:var(--gold-d);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.04em}
@@ -40,63 +41,65 @@
   .tot td{border-top:2px solid var(--gold)}
   .pos{color:var(--green)}
   .neg{color:var(--red)}
+  .pending{color:var(--muted)}
   .today td{background:#fdf6e6}
   .part{font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0}
-  .empty{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:18px;
-         color:var(--muted);font-size:13px;text-align:center}
+  .empty{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:18px;color:var(--muted);font-size:13px;text-align:center}
+  .notice{border-left:3px solid var(--gold);padding:10px 14px;background:#fffdf8;font-size:13px;line-height:1.6;margin:12px 0}
   .foot{color:var(--muted);font-size:11.5px;margin-top:18px;line-height:1.6}
+  @media(max-width:600px){body{padding:14px}.kpi{min-width:140px}th,td{white-space:nowrap}}
 </style>
 </head>
 <body>
 <h1>Pure Majesty Pets — Ventes & Bénéfices</h1>
-<div class="sub" id="sub"></div>
-
+<div class="sub" id="sub">Dernière période : du 24 septembre 2026 à 22 h au 25 septembre 2026 à 22 h, heure du Québec.</div>
+<div class="notice" id="sync-status">Clôture du 25 septembre 2026 : 27 commandes, ventes nettes de 1 530,17 USD / 2 157,50 CAD. Frais MaxDrop et bénéfice : à rapprocher. Découpage conservé : 22 h → 22 h.</div>
 <div class="nav" id="nav"></div>
-
 <h2 id="h-mtd"></h2>
 <div class="cards" id="mtd"></div>
-
+<p class="sub" id="cost-status"></p>
 <h2 id="h-sem"></h2>
-<table><thead><tr>
+<div class="table-wrap"><table><thead><tr>
   <th>Semaine</th><th>Jours</th><th>Commandes</th><th>CA net USD</th><th>CA net CAD</th>
-  <th>COGS CAD</th><th>Marge brute CAD</th><th>Remb. CAD</th><th>Bénéfice net CAD</th>
-</tr></thead><tbody id="sb"></tbody><tfoot id="sf"></tfoot></table>
-
+  <th>Coûts suivis CAD</th><th>Marge suivie CAD</th><th>Remb. CAD</th><th>Résultat estimé CAD</th>
+</tr></thead><tbody id="sb"></tbody><tfoot id="sf"></tfoot></table></div>
 <h2 id="h-jour"></h2>
-<table><thead><tr>
-  <th>Date</th><th>Commandes</th><th>CA net USD</th><th>CA net CAD</th>
-  <th>COGS CAD</th><th>Marge brute CAD</th><th>Remb. CAD</th><th>Bénéfice net CAD</th>
-</tr></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table>
-
+<div class="table-wrap"><table><thead><tr>
+  <th>Date de clôture</th><th>Commandes</th><th>CA net USD</th><th>CA net CAD</th>
+  <th>Coûts suivis CAD</th><th>Marge suivie CAD</th><th>Remb. CAD</th><th>Résultat estimé CAD</th>
+</tr></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div>
 <h2 id="h-backlog"></h2>
 <div class="cards" id="backlog-kpi"></div>
-<div id="backlog-tbl"></div>
-
+<div class="table-wrap" id="backlog-tbl"></div>
 <h2>Mois passés <span class="n">— récapitulatif ; cliquez un mois en haut de page pour son détail jour par jour</span></h2>
-<div id="passes"></div>
-
+<div class="table-wrap" id="passes"></div>
 <div class="foot" id="foot"></div>
-
+<noscript>Activez JavaScript pour afficher les tableaux et les cumuls. Les ventes de la dernière période sont indiquées ci-dessus ; les coûts manquants ne sont pas assimilés à zéro.</noscript>
 <script>
-const D = {"rows": [["2026-07-06", 7, 144.18, 205.07, 65.97, 139.1, 0], ["2026-07-07", 6, 254.29, 361.3, 142.78, 218.52, 0], ["2026-07-08", 9, 350.23, 497.61, 197.69, 299.92, 0], ["2026-07-09", 6, 273.55, 387.57, 131.42, 256.15, 0], ["2026-07-11", 6, 212.91, 301.57, 109.49, 192.08, 0], ["2026-07-12", 5, 170.12, 240.41, 98.32, 142.1, 0], ["2026-07-13", 10, 550.21, 779.81, 317.72, 462.09, 0], ["2026-07-14", 13, 374.3, 526.41, 206.56, 319.85, 0], ["2026-07-15", 6, 234.7, 329.85, 140.31, 189.53, 0], ["2026-07-16", 6, 272.8, 382.98, 154.2, 228.78, 0], ["2026-07-17", 5, 189.26, 265.38, 97.55, 167.83, 0], ["2026-07-18", 7, 276.62, 387.87, 151.75, 236.13, 0], ["2026-07-19", 10, 385.7, 540.75, 151.72, 389.03, 0], ["2026-07-21", 9, 410.47, 579.18, 218.14, 361.04, 0], ["2026-07-22", 4, 195.06, 274.9, 88.29, 186.61, 0], ["2026-07-23", 8, 300.57, 423.59, 163.41, 260.18, 0], ["2026-07-24", 12, 385.55, 543.36, 198.37, 344.98, 0], ["2026-07-25", 5, 272.53, 384.13, 141.64, 242.49, 0], ["2026-07-26", 5, 148.73, 209.63, 76.27, 133.37, 0], ["2026-07-27", 7, 341.97, 481.98, 196.1, 285.87, 0], ["2026-07-28", 13, 376.71, 531.69, 130.92, 400.77, 0], ["2026-07-29", 5, 161.25, 227.27, 88.3, 138.97, 0], ["2026-07-30", 17, 665.4, 932.96, 305.74, 627.22, 0], ["2026-07-31", 12, 460.46, 645.61, 227.6, 418.01, 100.91], ["2026-08-01", 11, 455.63, 638.84, 184.25, 454.59, 0], ["2026-08-02", 9, 414.82, 581.62, 216.76, 364.85, 0], ["2026-08-03", 16, 701.27, 984.79, 366.62, 618.17, 0], ["2026-08-04", 14, 667.86, 939.28, 358.25, 581.03, 0], ["2026-08-05", 12, 573.99, 804.27, 314.42, 489.86, 0], ["2026-08-06", 5, 233.09, 325.02, 116.35, 208.67, 0], ["2026-08-07", 10, 419.11, 584.41, 221.92, 362.49, 33.45], ["2026-08-08", 15, 614.63, 857.04, 297.15, 559.89, 0], ["2026-08-09", 6, 301.55, 420.48, 137.91, 282.58, 0], ["2026-08-10", 12, 815.89, 1137.51, 392.9, 744.61, 50.16], ["2026-08-11", 11, 640.92, 892.16, 326.62, 565.54, 122.55], ["2026-08-12", 9, 426.54, 594.6, 215.21, 379.39, 142.75], ["2026-08-13", 11, 448.9, 625.77, 194.6, 431.16, 0], ["2026-08-14", 11, 771.48, 1074.83, 381.21, 693.62, 0], ["2026-08-15", 11, 661.51, 928.5, 401.15, 527.35, 0], ["2026-08-16", 7, 350.19, 491.53, 177.75, 313.77, 84.19], ["2026-08-17", 12, 764.88, 1060.74, 369.46, 691.28, 0], ["2026-08-18", 10, 522.81, 727.16, 268.71, 458.25, 106.76], ["2026-08-19", 16, 708.79, 983.45, 349.22, 634.23, 0], ["2026-08-20", 15, 1029.61, 1420.35, 536.65, 883.69, 0], ["2026-08-21", 12, 583.51, 803.35, 297.99, 505.36, 99.09], ["2026-08-22", 13, 725.77, 999.24, 342.23, 657.01, 35.69], ["2026-08-23", 11, 593.88, 817.77, 282.79, 534.98, 0], ["2026-08-24", 18, 1269.4, 1751.55, 624.85, 1126.7, 95.17], ["2026-08-25", 23, 1148.77, 1590.94, 516.43, 1074.51, 271.24], ["2026-08-26", 29, 1711.42, 2374.87, 759.62, 1615.25, 0], ["2026-08-27", 24, 1430.52, 1985.85, 690.88, 1294.97, 0], ["2026-08-28", 21, 1106.15, 1537.88, 532.65, 1005.23, 0], ["2026-08-29", 22, 1296.32, 1802.53, 593.94, 1208.59, 0], ["2026-08-30", 20, 1116.46, 1552.44, 541.29, 1011.14, 373.66], ["2026-08-31", 20, 1326.63, 1842.69, 574.37, 1268.32, 365.27], ["2026-09-01", 19, 1121.4, 1555.27, 501.45, 1053.82, 0], ["2026-09-02", 16, 1096.95, 1526.95, 544.23, 982.72, 0], ["2026-09-03", 20, 1207.86, 1666.61, 630.43, 1036.17, 0], ["2026-09-04", 16, 997.71, 1380.52, 430.99, 949.53, 0], ["2026-09-05", 15, 932.0, 1289.52, 406.23, 883.29, 0], ["2026-09-06", 21, 1171.99, 1621.57, 494.85, 1126.72, 0], ["2026-09-07", 25, 1445.56, 2004.12, 717.75, 1286.37, 0], ["2026-09-08", 13, 837.99, 1161.79, 412.75, 749.04, 0], ["2026-09-09", 20, 1070.89, 1484.68, 482.88, 1001.8, 0], ["2026-09-10", 26, 1484.17, 2057.65, 708.89, 1348.76, 0], ["2026-09-11", 22, 1439.47, 1995.68, 597.83, 1397.85, 0], ["2026-09-12", 16, 995.21, 1380.55, 529.2, 851.35, 0], ["2026-09-13", 18, 1224.86, 1699.12, 637.06, 1062.06, 0], ["2026-09-14", 10, 630.64, 881.57, 331.54, 550.03, 0], ["2026-09-15", 25, 1287.92, 1800.38, 552.88, 1247.5, 2921.55], ["2026-09-16", 24, 1312.59, 1834.87, 663.53, 1171.35, 0], ["2026-09-17", 24, 2169.21, 3032.33, 1195.02, 1837.31, 0], ["2026-09-18", 27, 1573.99, 2201.86, 834.08, 1367.78, 0], ["2026-09-19", 27, 1750.3, 2447.44, 958.81, 1488.63, 0], ["2026-09-20", 26, 1713.42, 2396.9, 894.25, 1502.66, 0], ["2026-09-21", 20, 1181.14, 1653.36, 598.39, 1054.97, 0], ["2026-09-22", 19, 1083.36, 1524.83, 545.49, 979.34, 0], ["2026-09-23", 19, 1155.07, 1628.07, 545.25, 1082.82, 0], ["2026-09-24", 26, 1541.69, 2180.17, 827.57, 1352.6, 0]], "moisCourant": "2026-09", "libelleMoisCourant": "Septembre 2026", "libelles": {"2026-07": "Juillet 2026", "2026-08": "Août 2026", "2026-09": "Septembre 2026"}, "debutHistorique": "2026-07-06", "build": "2026-09-24 22:00 (Est)", "fee": 0.039, "feeFixe": 0.3, "backlog": {"commandes": 206, "unites": null, "coutUsd": 4187.74, "coutCad": 5922.05, "maj": "2026-09-24 (run quotidien)", "produits": []}, "reserve": {"taux": 0, "parts": {}, "depuisCommande": null}};
+const D = {"rows":[["2026-07-06",7,144.18,205.07,65.97,139.1,0],["2026-07-07",6,254.29,361.3,142.78,218.52,0],["2026-07-08",9,350.23,497.61,197.69,299.92,0],["2026-07-09",6,273.55,387.57,131.42,256.15,0],["2026-07-11",6,212.91,301.57,109.49,192.08,0],["2026-07-12",5,170.12,240.41,98.32,142.1,0],["2026-07-13",10,550.21,779.81,317.72,462.09,0],["2026-07-14",13,374.3,526.41,206.56,319.85,0],["2026-07-15",6,234.7,329.85,140.31,189.53,0],["2026-07-16",6,272.8,382.98,154.2,228.78,0],["2026-07-17",5,189.26,265.38,97.55,167.83,0],["2026-07-18",7,276.62,387.87,151.75,236.13,0],["2026-07-19",10,385.7,540.75,151.72,389.03,0],["2026-07-21",9,410.47,579.18,218.14,361.04,0],["2026-07-22",4,195.06,274.9,88.29,186.61,0],["2026-07-23",8,300.57,423.59,163.41,260.18,0],["2026-07-24",12,385.55,543.36,198.37,344.98,0],["2026-07-25",5,272.53,384.13,141.64,242.49,0],["2026-07-26",5,148.73,209.63,76.27,133.37,0],["2026-07-27",7,341.97,481.98,196.1,285.87,0],["2026-07-28",13,376.71,531.69,130.92,400.77,0],["2026-07-29",5,161.25,227.27,88.3,138.97,0],["2026-07-30",17,665.4,932.96,305.74,627.22,0],["2026-07-31",12,460.46,645.61,227.6,418.01,100.91],["2026-08-01",11,455.63,638.84,184.25,454.59,0],["2026-08-02",9,414.82,581.62,216.76,364.85,0],["2026-08-03",16,701.27,984.79,366.62,618.17,0],["2026-08-04",14,667.86,939.28,358.25,581.03,0],["2026-08-05",12,573.99,804.27,314.42,489.86,0],["2026-08-06",5,233.09,325.02,116.35,208.67,0],["2026-08-07",10,419.11,584.41,221.92,362.49,33.45],["2026-08-08",15,614.63,857.04,297.15,559.89,0],["2026-08-09",6,301.55,420.48,137.91,282.58,0],["2026-08-10",12,815.89,1137.51,392.9,744.61,50.16],["2026-08-11",11,640.92,892.16,326.62,565.54,122.55],["2026-08-12",9,426.54,594.6,215.21,379.39,142.75],["2026-08-13",11,448.9,625.77,194.6,431.16,0],["2026-08-14",11,771.48,1074.83,381.21,693.62,0],["2026-08-15",11,661.51,928.5,401.15,527.35,0],["2026-08-16",7,350.19,491.53,177.75,313.77,84.19],["2026-08-17",12,764.88,1060.74,369.46,691.28,0],["2026-08-18",10,522.81,727.16,268.71,458.25,106.76],["2026-08-19",16,708.79,983.45,349.22,634.23,0],["2026-08-20",15,1029.61,1420.35,536.65,883.69,0],["2026-08-21",12,583.51,803.35,297.99,505.36,99.09],["2026-08-22",13,725.77,999.24,342.23,657.01,35.69],["2026-08-23",11,593.88,817.77,282.79,534.98,0],["2026-08-24",18,1269.4,1751.55,624.85,1126.7,95.17],["2026-08-25",23,1148.77,1590.94,516.43,1074.51,271.24],["2026-08-26",29,1711.42,2374.87,759.62,1615.25,0],["2026-08-27",24,1430.52,1985.85,690.88,1294.97,0],["2026-08-28",21,1106.15,1537.88,532.65,1005.23,0],["2026-08-29",22,1296.32,1802.53,593.94,1208.59,0],["2026-08-30",20,1116.46,1552.44,541.29,1011.14,373.66],["2026-08-31",20,1326.63,1842.69,574.37,1268.32,365.27],["2026-09-01",19,1121.4,1555.27,501.45,1053.82,0],["2026-09-02",16,1096.95,1526.95,544.23,982.72,0],["2026-09-03",20,1207.86,1666.61,630.43,1036.17,0],["2026-09-04",16,997.71,1380.52,430.99,949.53,0],["2026-09-05",15,932.0,1289.52,406.23,883.29,0],["2026-09-06",21,1171.99,1621.57,494.85,1126.72,0],["2026-09-07",25,1445.56,2004.12,717.75,1286.37,0],["2026-09-08",13,837.99,1161.79,412.75,749.04,0],["2026-09-09",20,1070.89,1484.68,482.88,1001.8,0],["2026-09-10",26,1484.17,2057.65,708.89,1348.76,0],["2026-09-11",22,1439.47,1995.68,597.83,1397.85,0],["2026-09-12",16,995.21,1380.55,529.2,851.35,0],["2026-09-13",18,1224.86,1699.12,637.06,1062.06,0],["2026-09-14",10,630.64,881.57,331.54,550.03,0],["2026-09-15",25,1287.92,1800.38,552.88,1247.5,2921.55],["2026-09-16",24,1312.59,1834.87,663.53,1171.35,0],["2026-09-17",24,2169.21,3032.33,1195.02,1837.31,0],["2026-09-18",27,1573.99,2201.86,834.08,1367.78,0],["2026-09-19",27,1750.3,2447.44,958.81,1488.63,0],["2026-09-20",26,1713.42,2396.9,894.25,1502.66,0],["2026-09-21",20,1181.14,1653.36,598.39,1054.97,0],["2026-09-22",19,1083.36,1524.83,545.49,979.34,0],["2026-09-23",19,1155.07,1628.07,545.25,1082.82,0],["2026-09-24",26,1541.69,2180.17,827.57,1352.6,0],["2026-09-25",27,1530.166,2157.5,null,null,0]],"moisCourant":"2026-09","libelleMoisCourant":"Septembre 2026","libelles":{"2026-07":"Juillet 2026","2026-08":"Août 2026","2026-09":"Septembre 2026"},"debutHistorique":"2026-07-06","build":"2026-09-26 — arrêté au 2026-09-25 à 22:00 (America/Toronto)","fee":0.039,"feeFixe":0.3,"backlog":{"commandes":206,"unites":null,"coutUsd":4187.74,"coutCad":5922.05,"maj":"2026-09-24 (run quotidien)","produits":[]},"reserve":{"taux":0,"parts":{},"depuisCommande":null},"periodRule":{"timezone":"America/Toronto","startLocalHour":22,"endLocalHour":22,"label":"closing_date","endExclusive":true},"periodMeta":{"2026-09-25":{"start":"2026-09-24T22:00:00-04:00","end":"2026-09-25T22:00:00-04:00","salesSource":"ShopifyQL hourly, USD and CAD; cross-check 27 non-test paid orders","costSource":"Maxdropshipping","costStatus":"pending","matchedCosts":0,"expectedOrders":27,"productCostCad":null,"shippingCostCad":null,"paymentFeesCad":null,"resultCad":null,"reversalsIncludedInNet":true}},"supplierPolicy":{"dsersEndApproximate":"1600 et quelques","dsersExactLastOrder":null,"current":"Maxdropshipping","prepaidStock":true}};
 const FEE = D.fee;
 const FEE_FIXE = D.feeFixe || 0;
 const RES = D.reserve || {taux:0, parts:{}};
-const RESERVE = RES.taux || 0;   // taux de réserve sur les avoirs (règle utilisateur)
-// part réservable d'un jour : 1 = toutes les commandes du jour sont >= depuisCommande, 0 = aucune
+const RESERVE = RES.taux || 0;
+const known = n => typeof n === "number" && Number.isFinite(n);
+const add = (a,b) => known(a) && known(b) ? a+b : null;
+const esc = v => String(v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const f = n => known(n) ? "$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "À rapprocher";
+const tone = n => !known(n) ? "pending" : (n>=0 ? "pos" : "neg");
+const meta = r => (D.periodMeta || {})[r[0]];
 const part = r => (RES.parts && RES.parts[r[0]]!==undefined) ? RES.parts[r[0]] : (RES.apresDefaut ? 1 : 0);
-const f = n => "$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
-// r[1]=commandes, r[3]=CA net CAD, r[5]=marge brute CAD ; taux CAD du jour = r[3]/r[2]
-const remb = r => (r[6]||0);
-const benef = r => r[5] - (FEE*r[3] + FEE_FIXE*r[1]*(r[2]?r[3]/r[2]:1)) - remb(r);
+const remb = r => r[6] === undefined ? 0 : r[6];
+// Historic calculation is preserved. New periods require an explicit reconciled result.
+function benef(r){
+  const m=meta(r);
+  if(m) return known(m.resultCad) ? m.resultCad : null;
+  if(![r[1],r[2],r[3],r[5],remb(r)].every(known)) return null;
+  return r[5] - (FEE*r[3] + FEE_FIXE*r[1]*(r[2]?r[3]/r[2]:1)) - remb(r);
+}
 const ym = r => r[0].slice(0,7);
-
-/* ---------- semaines (lundi -> dimanche) ---------- */
-// Clé de semaine = date du LUNDI (AAAA-MM-JJ). Calcul en UTC pour éviter tout décalage.
 function lundiDe(iso){
   const d = new Date(iso+"T00:00:00Z");
-  const j = d.getUTCDay();              // 0 = dimanche
-  d.setUTCDate(d.getUTCDate() - ((j+6)%7));
+  d.setUTCDate(d.getUTCDate()-((d.getUTCDay()+6)%7));
   return d.toISOString().slice(0,10);
 }
 function plusJours(iso,n){
@@ -106,154 +109,116 @@ function plusJours(iso,n){
 }
 const MOIS_COURT = ["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 const jourCourt = iso => parseInt(iso.slice(8,10),10)+" "+MOIS_COURT[parseInt(iso.slice(5,7),10)-1];
-// Étiquette « 14 sept. → 20 sept. » ; l'année n'est rappelée que si la semaine change d'année
 function libelleSemaine(lundi){
-  const dim = plusJours(lundi,6);
-  const an = lundi.slice(0,4)!==dim.slice(0,4) ? " "+dim.slice(0,4) : "";
-  return jourCourt(lundi)+" → "+jourCourt(dim)+an;
+  const dim=plusJours(lundi,6);
+  return jourCourt(lundi)+" → "+jourCourt(dim)+(lundi.slice(0,4)!==dim.slice(0,4)?" "+dim.slice(0,4):"");
 }
-
-/* ---------- agrégation par mois ---------- */
-const parMois = {};
-D.rows.forEach(r=>{
-  const k = ym(r);
-  const m = parMois[k] || (parMois[k] = {jours:0,cmd:0,usd:0,cad:0,cogs:0,marge:0,remb:0,benef:0,resv:0});
-  m.jours++; m.cmd+=r[1]; m.usd+=r[2]; m.cad+=r[3]; m.cogs+=r[4]; m.marge+=r[5]; m.remb+=remb(r); m.benef+=benef(r); m.resv+=benef(r)*part(r);
+function emptyTotals(){return {jours:0,cmd:0,usd:0,cad:0,cogs:0,marge:0,remb:0,benef:0,resv:0,pending:0};}
+function accumulate(t,r){
+  t.jours++; t.cmd+=r[1]; t.usd=add(t.usd,r[2]); t.cad=add(t.cad,r[3]);
+  t.cogs=add(t.cogs,r[4]); t.marge=add(t.marge,r[5]); t.remb=add(t.remb,remb(r));
+  const b=benef(r); t.benef=add(t.benef,b);
+  t.resv=add(t.resv,part(r)===0?0:(known(b)?b*part(r):null));
+  if(!known(r[4]) || !known(r[5]) || !known(b)) t.pending++;
+  return t;
+}
+const parMois={};
+D.rows.forEach(r=>accumulate(parMois[ym(r)]||(parMois[ym(r)]=emptyTotals()),r));
+const dernier=D.rows[D.rows.length-1];
+const moisListe=Object.keys(parMois).sort().reverse();
+document.getElementById("sub").textContent=
+  `Dernière clôture : ${dernier[0]} à 22 h — ${dernier[1]} commandes. Chaque ligne couvre 22 h la veille → 22 h à cette date (America/Toronto). Historique depuis le ${D.debutHistorique}.`;
+const lastMeta=meta(dernier);
+document.getElementById("sync-status").textContent=
+  `Clôture du ${dernier[0]} : ${dernier[1]} commandes, ventes nettes ${f(dernier[2])} USD / ${f(dernier[3])} CAD. `+
+  (lastMeta && lastMeta.costStatus!=="complete"
+    ? `MaxDrop : ${lastMeta.matchedCosts}/${lastMeta.expectedOrders} commandes rapprochées. Frais et résultat à rapprocher ; aucun coût manquant n'est compté à zéro.`
+    : `Consultez la méthode et les limites de calcul en bas de page.`);
+const nav=document.getElementById("nav");
+nav.innerHTML=moisListe.map(k=>`<button type="button" class="chip" data-m="${k}" id="chip-${k}">${esc(D.libelles[k]||k)}</button>`).join("");
+nav.addEventListener("click",e=>{
+  const b=e.target.closest("button[data-m]");
+  if(b && parMois[b.dataset.m]) render(b.dataset.m);
 });
-
-/* ---------- navigation par mois ---------- */
-const dernier = D.rows[D.rows.length-1];
-const moisListe = Object.keys(parMois).sort().reverse();   // récent en premier
-
-document.getElementById("sub").textContent =
-  `Dernier jour : ${dernier[0]} — ${dernier[1]} commandes. Historique depuis le ${D.debutHistorique}. Cliquez un mois pour voir chacun de ses jours.`;
-
-const nav = document.getElementById("nav");
-nav.innerHTML = moisListe.map(k=>
-  `<button type="button" class="chip" data-m="${k}" id="chip-${k}">${D.libelles[k]}</button>`).join("");
-nav.addEventListener("click", e=>{
-  const b = e.target.closest("button[data-m]");
-  if(b) render(b.dataset.m);
-});
-
-/* ---------- rendu d'un mois (KPI + tableau jour par jour) ---------- */
+function card(label,value,cls=""){
+  return `<div class="kpi ${cls==="gold"?"hl":""}"><div class="lab">${esc(label)}</div><div class="val ${known(value)?cls:"pending"}">${f(value)}</div></div>`;
+}
+function moneyCells(t){
+  return `<td>${f(t.usd)}</td><td>${f(t.cad)}</td><td>${f(t.cogs)}</td><td>${f(t.marge)}</td>`+
+    `<td class="${known(t.remb)&&t.remb>0?"neg":""}">${f(t.remb)}</td><td class="${tone(t.benef)}">${f(t.benef)}</td>`;
+}
 function render(k){
-  moisListe.forEach(m=>document.getElementById("chip-"+m).classList.toggle("on", m===k));
-  const cur = parMois[k];
-  const jours = D.rows.filter(r=>ym(r)===k);
-  const courant = k===D.moisCourant;
-  const partiel = k===D.debutHistorique.slice(0,7) && D.debutHistorique.slice(8)!=="01"
-    ? `, à partir du ${D.debutHistorique}` : "";
-
-  document.getElementById("h-mtd").innerHTML =
-    `${D.libelles[k]} — ${courant?"cumul du mois":"bilan du mois"} <span class="n">(${cur.jours} jour${cur.jours>1?"s":""} enregistré${cur.jours>1?"s":""}, ${cur.cmd} commandes${partiel})</span>`;
-
-  document.getElementById("mtd").innerHTML = `
-    <div class="kpi hl"><div class="lab">CA net du mois USD</div><div class="val">${f(cur.usd)}</div></div>
-    <div class="kpi hl"><div class="lab">CA net du mois CAD</div><div class="val gold">${f(cur.cad)}</div></div>
-    <div class="kpi"><div class="lab">COGS du mois CAD</div><div class="val">${f(cur.cogs)}</div></div>
-    <div class="kpi"><div class="lab">Marge brute du mois CAD</div><div class="val">${f(cur.marge)}</div></div>
-    <div class="kpi"><div class="lab">Remboursements du mois CAD</div><div class="val neg">${f(cur.remb)}</div></div>
-    <div class="kpi"><div class="lab">Bénéfice net du mois CAD</div><div class="val green">${f(cur.benef)}</div></div>
-    ${cur.resv>0 ? `<div class="kpi hl"><div class="lab">Fonds disponibles CAD</div><div class="val green">${f(cur.benef - cur.resv*RESERVE)}</div></div>
-    <div class="kpi"><div class="lab">Réserve CAD (${(RESERVE*100).toFixed(0)} % des cmd &ge; #${RES.depuisCommande})</div><div class="val res">${f(cur.resv*RESERVE)}</div></div>` : ""}
-    <div class="kpi"><div class="lab">Panier moyen CAD</div><div class="val">${f(cur.cmd?cur.cad/cur.cmd:0)}</div></div>`;
-
-  /* --- semaine par semaine (lundi → dimanche) --- */
-  const parSem = {};
-  jours.forEach(r=>{
-    const l = lundiDe(r[0]);
-    const s = parSem[l] || (parSem[l] = {jours:0,cmd:0,usd:0,cad:0,cogs:0,marge:0,remb:0,benef:0});
-    s.jours++; s.cmd+=r[1]; s.usd+=r[2]; s.cad+=r[3]; s.cogs+=r[4]; s.marge+=r[5];
-    s.remb+=remb(r); s.benef+=benef(r);
-  });
-  const semaines = Object.keys(parSem).sort().reverse();
-  document.getElementById("h-sem").innerHTML =
-    `Semaine par semaine — ${D.libelles[k]} <span class="n">(lundi → dimanche ; une semaine à cheval sur deux mois n'affiche ici que ses jours de ${D.libelles[k]})</span>`;
-  const sb = document.getElementById("sb");
-  sb.innerHTML = "";
-  semaines.forEach(l=>{
-    const s = parSem[l];
-    const b = s.benef;
-    const enCours = l<=dernier[0] && plusJours(l,6)>=dernier[0];
-    const complet = s.jours>=7;
-    const note = enCours ? ` <span class="part">(en cours)</span>`
-               : (complet ? "" : ` <span class="part">(${s.jours} jour${s.jours>1?"s":""} dans le mois)</span>`);
-    sb.insertAdjacentHTML("beforeend",
-     `<tr class="${enCours?"today":""}"><td>${libelleSemaine(l)}${note}</td><td>${s.jours}</td><td>${s.cmd}</td>`+
-     `<td>${f(s.usd)}</td><td>${f(s.cad)}</td><td>${f(s.cogs)}</td><td>${f(s.marge)}</td>`+
-     `<td class="${s.remb>0?'neg':''}">${f(s.remb)}</td><td class="${b>=0?"pos":"neg"}">${f(b)}</td></tr>`);
-  });
-  document.getElementById("sf").innerHTML =
-   `<tr class="tot"><td>TOTAL ${D.libelles[k]}</td><td>${cur.jours}</td><td>${cur.cmd}</td><td>${f(cur.usd)}</td>`+
-   `<td>${f(cur.cad)}</td><td>${f(cur.cogs)}</td><td>${f(cur.marge)}</td><td>${f(cur.remb)}</td><td>${f(cur.benef)}</td></tr>`;
-
-  document.getElementById("h-jour").innerHTML =
-    `Détail jour par jour — ${D.libelles[k]} <span class="n">(du plus récent au plus ancien)</span>`;
-
-  const tb = document.getElementById("tb");
-  tb.innerHTML = "";
-  jours.slice().reverse().forEach(r=>{
-    const b = benef(r);
-    tb.insertAdjacentHTML("beforeend",
-     `<tr class="${r[0]===dernier[0]?"today":""}"><td>${r[0]}</td><td>${r[1]}</td><td>${f(r[2])}</td><td>${f(r[3])}</td>`+
-     `<td>${f(r[4])}</td><td>${f(r[5])}</td><td class="${remb(r)>0?'neg':''}">${f(remb(r))}</td><td class="${b>=0?"pos":"neg"}">${f(b)}</td></tr>`);
-  });
-  document.getElementById("tf").innerHTML =
-   `<tr class="tot"><td>TOTAL ${D.libelles[k]}</td><td>${cur.cmd}</td><td>${f(cur.usd)}</td>`+
-   `<td>${f(cur.cad)}</td><td>${f(cur.cogs)}</td><td>${f(cur.marge)}</td><td>${f(cur.remb)}</td><td>${f(cur.benef)}</td></tr>`;
+  moisListe.forEach(m=>document.getElementById("chip-"+m).classList.toggle("on",m===k));
+  const cur=parMois[k], jours=D.rows.filter(r=>ym(r)===k), label=D.libelles[k]||k;
+  const partiel=k===D.debutHistorique.slice(0,7)&&D.debutHistorique.slice(8)!=="01" ? `, à partir du ${D.debutHistorique}`:"";
+  document.getElementById("h-mtd").innerHTML=
+    `${esc(label)} — ${k===D.moisCourant?"cumul du mois":"bilan du mois"} <span class="n">(${cur.jours} jours enregistrés, ${cur.cmd} commandes${partiel})</span>`;
+  document.getElementById("mtd").innerHTML=
+    card("CA net du mois USD",cur.usd)+card("CA net du mois CAD",cur.cad,"gold")+
+    card("Coûts suivis du mois CAD",cur.cogs)+card("Marge suivie du mois CAD",cur.marge)+
+    card("Remboursements du mois CAD",cur.remb)+card("Résultat estimé du mois CAD",cur.benef,"green")+
+    (RESERVE>0&&known(cur.resv)&&cur.resv>0?
+      card("Fonds disponibles estimés CAD",known(cur.benef)?cur.benef-cur.resv*RESERVE:null,"green")+
+      card(`Réserve CAD (${(RESERVE*100).toFixed(0)} % des cmd ≥ #${RES.depuisCommande})`,cur.resv*RESERVE,"res"):"")+
+    card("Panier moyen net CAD",cur.cmd?cur.cad/cur.cmd:0);
+  document.getElementById("cost-status").textContent=cur.pending?
+    `${cur.pending} période(s) avec rapprochement incomplet : les ventes sont cumulées, mais les coûts, la marge et le résultat du mois ne sont pas présentés comme complets. Les autres valeurs historiques sont conservées, sans nouvelle vérification.`
+    :"Valeurs historiques conservées. Les coûts et frais utilisés à l'origine n'ont pas été revérifiés lors de cette mise à jour.";
+  const parSem={};
+  jours.forEach(r=>{const l=lundiDe(r[0]);accumulate(parSem[l]||(parSem[l]=emptyTotals()),r);});
+  document.getElementById("h-sem").innerHTML=
+    `Semaine par semaine — ${esc(label)} <span class="n">(lundi → dimanche, selon la date de clôture ; uniquement les jours de ce mois)</span>`;
+  document.getElementById("sb").innerHTML=Object.keys(parSem).sort().reverse().map(l=>{
+    const s=parSem[l], enCours=l<=dernier[0]&&plusJours(l,6)>=dernier[0];
+    const note=enCours?' <span class="part">(en cours)</span>':(s.jours>=7?"":` <span class="part">(${s.jours} jours dans le mois)</span>`);
+    return `<tr class="${enCours?"today":""}"><td>${libelleSemaine(l)}${note}</td><td>${s.jours}</td><td>${s.cmd}</td>${moneyCells(s)}</tr>`;
+  }).join("");
+  document.getElementById("sf").innerHTML=`<tr class="tot"><td>TOTAL ${esc(label)}</td><td>${cur.jours}</td><td>${cur.cmd}</td>${moneyCells(cur)}</tr>`;
+  document.getElementById("h-jour").innerHTML=`Détail jour par jour — ${esc(label)} <span class="n">(clôtures à 22 h ; du plus récent au plus ancien)</span>`;
+  document.getElementById("tb").innerHTML=jours.slice().reverse().map(r=>{
+    const m=meta(r), t={usd:r[2],cad:r[3],cogs:r[4],marge:r[5],remb:remb(r),benef:benef(r)};
+    const note=m&&m.costStatus!=="complete"?' <span class="part">(MaxDrop à rapprocher)</span>':"";
+    return `<tr class="${r[0]===dernier[0]?"today":""}"><td>${r[0]}${note}</td><td>${r[1]}</td>${moneyCells(t)}</tr>`;
+  }).join("");
+  document.getElementById("tf").innerHTML=`<tr class="tot"><td>TOTAL ${esc(label)}</td><td>${cur.cmd}</td>${moneyCells(cur)}</tr>`;
 }
-render(D.moisCourant);
-
-/* ---------- backlog colis non expédiés ---------- */
+render(parMois[D.moisCourant]?D.moisCourant:moisListe[0]);
 if(D.backlog){
-  const B = D.backlog;
-  document.getElementById("h-backlog").innerHTML =
-    `Colis non expédiés <span class="n">— commandes payées en attente d'envoi (relevé ${B.maj})</span>`;
-  document.getElementById("backlog-kpi").innerHTML = `
-    <div class="kpi hl"><div class="lab">Commandes à expédier</div><div class="val">${B.commandes}</div></div>
-    <div class="kpi"><div class="lab">Unités</div><div class="val">${B.unites}</div></div>
-    <div class="kpi hl"><div class="lab">Coût fournisseur à payer USD</div><div class="val gold">${f(B.coutUsd)}</div></div>
-    <div class="kpi hl"><div class="lab">Coût fournisseur à payer CAD</div><div class="val gold">${f(B.coutCad)}</div></div>`;
-  let h = `<table><thead><tr><th>Produit</th><th>Unités</th><th>Coût unitaire USD</th><th>Coût total USD</th></tr></thead><tbody>`;
-  B.produits.forEach(p=>{
-    const inc = p.cout_total_usd!==null;
-    h += `<tr><td>${p.titre}</td><td>${p.unites}</td>`+
-         `<td>${inc?f(p.cout_unitaire_usd):"⚠ inconnu"}</td>`+
-         `<td>${inc?f(p.cout_total_usd):"exclu du total"}</td></tr>`;
-  });
-  h += `</tbody><tfoot><tr class="tot"><td>TOTAL à payer</td><td>${B.unites}</td><td>—</td><td>${f(B.coutUsd)}</td></tr></tfoot></table>`;
-  document.getElementById("backlog-tbl").innerHTML = h;
+  const B=D.backlog;
+  document.getElementById("h-backlog").innerHTML=`Colis non expédiés <span class="n">— ancien relevé conservé : ${esc(B.maj)} ; non actualisé lors de ce rattrapage</span>`;
+  document.getElementById("backlog-kpi").innerHTML=
+    `<div class="kpi hl"><div class="lab">Commandes dans l'ancien relevé</div><div class="val">${B.commandes}</div></div>`+
+    `<div class="kpi"><div class="lab">Unités</div><div class="val">${known(B.unites)?B.unites:"Non renseigné"}</div></div>`+
+    card("Ancien montant fournisseur USD",B.coutUsd,"gold")+card("Ancien montant fournisseur CAD",B.coutCad,"gold");
+  if(B.produits.length){
+    let h="<table><thead><tr><th>Produit</th><th>Unités</th><th>Coût unitaire USD</th><th>Coût total USD</th></tr></thead><tbody>";
+    B.produits.forEach(p=>{h+=`<tr><td>${esc(p.titre)}</td><td>${p.unites}</td><td>${f(p.cout_unitaire_usd)}</td><td>${f(p.cout_total_usd)}</td></tr>`;});
+    h+=`</tbody><tfoot><tr class="tot"><td>TOTAL ancien relevé</td><td>${known(B.unites)?B.unites:"—"}</td><td>—</td><td>${f(B.coutUsd)}</td></tr></tfoot></table>`;
+    document.getElementById("backlog-tbl").innerHTML=h;
+  }else document.getElementById("backlog-tbl").innerHTML='<div class="empty">Détail produit absent de l’ancien relevé. Ce montant n’est pas un rapprochement MaxDrop actuel.</div>';
 }
-
-/* ---------- mois passés ---------- */
-const passes = Object.keys(parMois).filter(k=>k!==D.moisCourant).sort().reverse();
-const box = document.getElementById("passes");
+const passes=Object.keys(parMois).filter(k=>k!==D.moisCourant).sort().reverse();
+const box=document.getElementById("passes");
 if(!passes.length){
-  box.innerHTML = `<div class="empty">Aucun mois terminé pour l'instant — ${D.libelleMoisCourant} basculera ici automatiquement le 1<sup>er</sup> du mois prochain.</div>`;
+  box.innerHTML='<div class="empty">Aucun mois antérieur enregistré.</div>';
 }else{
-  let tot={cmd:0,usd:0,cad:0,cogs:0,marge:0,remb:0,benef:0};
-  let html = `<table><thead><tr><th>Mois</th><th>Jours</th><th>Commandes</th><th>CA net USD</th>`+
-             `<th>CA net CAD</th><th>COGS CAD</th><th>Marge brute CAD</th><th>Remb. CAD</th><th>Bénéfice net CAD</th></tr></thead><tbody>`;
+  const tot=emptyTotals();
+  let h="<table><thead><tr><th>Mois</th><th>Jours</th><th>Commandes</th><th>CA net USD</th><th>CA net CAD</th><th>Coûts suivis CAD</th><th>Marge suivie CAD</th><th>Remb. CAD</th><th>Résultat estimé CAD</th></tr></thead><tbody>";
   passes.forEach(k=>{
     const m=parMois[k];
-    tot.cmd+=m.cmd; tot.usd+=m.usd; tot.cad+=m.cad; tot.cogs+=m.cogs; tot.marge+=m.marge; tot.remb+=m.remb; tot.benef+=m.benef;
-    const partiel = k===D.debutHistorique.slice(0,7) && D.debutHistorique.slice(8)!=="01"
-      ? `<span class="part"> (à partir du ${D.debutHistorique})</span>` : "";
-    html += `<tr><td>${D.libelles[k]}${partiel}</td><td>${m.jours}</td><td>${m.cmd}</td><td>${f(m.usd)}</td>`+
-            `<td>${f(m.cad)}</td><td>${f(m.cogs)}</td><td>${f(m.marge)}</td><td class="neg">${f(m.remb)}</td><td class="pos">${f(m.benef)}</td></tr>`;
+    ["cmd","usd","cad","cogs","marge","remb","benef"].forEach(p=>{tot[p]=add(tot[p],m[p]);});
+    const partial=k===D.debutHistorique.slice(0,7)&&D.debutHistorique.slice(8)!=="01"?` <span class="part">(à partir du ${D.debutHistorique})</span>`:"";
+    h+=`<tr><td>${esc(D.libelles[k]||k)}${partial}</td><td>${m.jours}</td><td>${m.cmd}</td>${moneyCells(m)}</tr>`;
   });
-  html += `</tbody><tfoot><tr class="tot"><td>TOTAL mois clos</td><td>—</td><td>${tot.cmd}</td><td>${f(tot.usd)}</td>`+
-          `<td>${f(tot.cad)}</td><td>${f(tot.cogs)}</td><td>${f(tot.marge)}</td><td>${f(tot.remb)}</td><td>${f(tot.benef)}</td></tr></tfoot></table>`;
-  box.innerHTML = html;
+  box.innerHTML=h+`</tbody><tfoot><tr class="tot"><td>TOTAL mois clos</td><td>—</td><td>${tot.cmd}</td>${moneyCells(tot)}</tr></tfoot></table>`;
 }
-
-document.getElementById("foot").innerHTML =
- "Bénéfice net = marge brute − frais de transaction Stripe − remboursements (perte nette : aucun retour marchandise ; budget pub supposé 0). "+
- "COGS = coût fournisseur DSers tout compris ; les produits sans coût DSers connu en sont exclus, la marge est donc une borne haute.<br>"+
- "Conversion CAD au taux mid-market relevé le jour de chaque run. Source ventes : Shopify (ShopifyQL, fenêtre 24 h glissante clôturée à 22 h Est).<br>"+
- (RES.depuisCommande ? `Réserve = ${(RESERVE*100).toFixed(0)} % du bénéfice net généré par les commandes à partir de la n° ${RES.depuisCommande} ; fonds disponibles = le reste.<br>` : "")+
- "Dernière mise à jour : " + D.build + ".";
+document.getElementById("foot").innerHTML=
+  "<strong>Périodes :</strong> 22 h la veille inclus → 22 h à la date de clôture exclu, America/Toronto. Aucune journée minuit–minuit ni période encore ouverte n’a été ajoutée.<br>"+
+  "<strong>Historique :</strong> les 79 lignes jusqu’au 24 septembre sont conservées, sans nouveau rapprochement. L’ancien libellé DSers n’établit pas la source réelle de tous les coûts. Selon Daniel, DSers s’arrête dans les commandes #1600 et quelques ; le seuil précis reste à vérifier. Les commandes récentes doivent être rapprochées dans Maxdropshipping.<br>"+
+  "<strong>Nouvelle période :</strong> ventes ShopifyQL en USD et CAD, contrôlées par les commandes Shopify. Les annulations/retours déjà inclus dans les ventes nettes ne sont pas déduits une seconde fois. Les coûts, leur devise et leur ventilation MaxDrop ne sont pas encore vérifiés : à rapprocher, jamais zéro.<br>"+
+  "<strong>Méthode provisoire demandée :</strong> isoler les frais d’envoi/traitement ; conserver séparément le coût du stock déjà prépayé selon Daniel. Un total Max mêlant produit et transport n’est pas automatiquement un coût d’envoi seul. Le résultat hors stock et autres charges n’est pas un bénéfice net comptable.<br>"+
+  "<strong>Ancienne estimation :</strong> marge brute − 3,9 % du CA CAD − 0,30 USD par commande converti au ratio CAD/USD du jour − remboursements enregistrés. Ce paramétrage historique n’est pas une vérification des frais de paiement actuels. Publicité et autres charges ne sont pas intégrées : elles ne sont pas réputées nulles. Les conversions historiques sont conservées ; la nouvelle période utilise directement les montants Shopify dans chaque devise.<br>"+
+  "Dernière mise à jour : "+esc(D.build)+".";
 </script>
 </body>
 </html>
