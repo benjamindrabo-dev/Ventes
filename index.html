@@ -187,7 +187,7 @@ function render(k){
     const note = enCours ? ` <span class="part">(en cours)</span>`
                : (complet ? "" : ` <span class="part">(${s.jours} jour${s.jours>1?"s":""} dans le mois)</span>`);
     sb.insertAdjacentHTML("beforeend",
-     `<tr class="${enCours?"today":""}"><td>${libelleSemaine(l)}${note}<br><span class="part">Bénéfice partiel si coûts exclus — détail sous le cumul mensuel</span></td><td>${s.jours}</td><td>${s.cmd}</td>`+
+     `<tr class="${enCours?"today":""}"><td>${libelleSemaine(l)}${note}<br><span class="part">Max ${jours.filter(r=>lundiDe(r[0])===l).reduce((n,r)=>n+(D.periodMeta?.[r[0]]?.costedOrders||0),0)}/${jours.filter(r=>lundiDe(r[0])===l).reduce((n,r)=>n+(D.periodMeta?.[r[0]]?.totalOrders||0),0)} — devis exclus : ${jours.filter(r=>lundiDe(r[0])===l).flatMap(r=>D.periodMeta?.[r[0]]?.missingQuotes||[]).join(", ")||"aucun"} ; autres coûts produits à compléter</span></td><td>${s.jours}</td><td>${s.cmd}</td>`+
      `<td>${f(s.usd)}</td><td>${f(s.cad)}</td><td>${f(s.cogs)}</td><td>${f(s.marge)}</td>`+
      `<td class="${s.remb>0?'neg':''}">${f(s.remb)}</td><td class="${b>=0?"pos":"neg"}">${f(b)}</td></tr>`);
   });
@@ -253,7 +253,7 @@ if(!passes.length){
     tot.cmd+=m.cmd; tot.usd+=m.usd; tot.cad+=m.cad; tot.cogs+=m.cogs; tot.marge+=m.marge; tot.remb+=m.remb; tot.benef+=m.benef;
     const partiel = k===D.debutHistorique.slice(0,7) && D.debutHistorique.slice(8)!=="01"
       ? `<span class="part"> (à partir du ${D.debutHistorique})</span>` : "";
-    html += `<tr><td>${D.libelles[k]}${partiel}</td><td>${m.jours}</td><td>${m.cmd}</td><td>${f(m.usd)}</td>`+
+    html += `<tr><td>${D.libelles[k]}${partiel}<br><span class="part">Devis exclus : ${D.rows.filter(r=>ym(r)===k).flatMap(r=>D.periodMeta?.[r[0]]?.missingQuotes||[]).join(", ")||"voir détail historique"}</span></td><td>${m.jours}</td><td>${m.cmd}</td><td>${f(m.usd)}</td>`+
             `<td>${f(m.cad)}</td><td>${f(m.cogs)}</td><td>${f(m.marge)}</td><td class="neg">${f(m.remb)}</td><td class="pos">${f(m.benef)}</td></tr>`;
   });
   html += `</tbody><tfoot><tr class="tot"><td>TOTAL mois clos</td><td>—</td><td>${tot.cmd}</td><td>${f(tot.usd)}</td>`+
@@ -267,6 +267,7 @@ document.getElementById("foot").innerHTML =
  "Frais de paiement : paramétrage historique 3,9 % du CA CAD + 0,30 USD/commande converti; ce ne sont pas des frais actuels vérifiés. Conversion indicative des coûts Max affichés en $ à partir des ventes CAD/USD Shopify de chaque période; aucun taux externe inventé. Shipping Cost à 0 ne prouve pas une livraison gratuite.<br>"+
  "Périodes : 22 h la veille inclus à 22 h le jour de clôture exclu, America/Toronto (heure d'été/hiver). Source : ShopifyQL horaire USD puis CAD, groupé par hour et order_id; Maxdropshipping authentifié. #2574 reste rattachée à la vente du 30 septembre, malgré sa création le 1er octobre. Aucun paiement global fournisseur n'est déduit une seconde fois.<br>"+
  "Dernière mise à jour : "+esc(D.build)+".";
+document.getElementById("foot").innerHTML += `<details><summary>Liste dynamique de tous les devis Max absents</summary>${Object.entries(D.periodMeta||{}).filter(([date,m])=>m.missingQuotes.length).map(([date,m])=>`${date} : ${m.missingQuotes.join(", ")}`).join("<br>")||"Aucun devis absent"}</details>`;
 </script>
 </body>
 </html>
